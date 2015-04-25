@@ -7,8 +7,7 @@
 # Die if any command dies.
 set -e
 
-CR_DIR="${HOME}"/chromium/src/
-cd "${CR_DIR}"
+cd $HOME/chromium/src
 
 # Default build type is Debug.
 CR_BUILDTYPE=Debug
@@ -29,4 +28,4 @@ if [ -z "$TARGETS" ]; then
   TARGETS="chrome"
 fi
 
-time ninja -C out_aura/"${CR_BUILDTYPE}" -k4 -j"${NUM_JOBS}" $TARGETS 2>&1 | tee ../errors
+time ninja -C out/"${CR_BUILDTYPE}" -k4 -j"${NUM_JOBS}" $TARGETS
