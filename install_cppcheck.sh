@@ -9,7 +9,8 @@ cd
 wget http://downloads.sf.net/project/cppcheck/cppcheck/$VERSION/$CPPCHECK_VERSION.tar.gz
 tar -zxvf $CPPCHECK_VERSION.tar.gz
 cd $CPPCHECK_VERSION
-sudo make install
+make SRCDIR=build CFGDIR=/usr/share/cppcheck/
+sudo make install CFGDIR=/usr/share/cppcheck/
 cd ..
 rm -rf $CPPCHECK_VERSION
 rm $CPPCHECK_VERSION.tar.gz
