@@ -19,4 +19,4 @@ if [ -z "$TARGETS" ]; then
   TARGETS="chrome"
 fi
 
-"${CR_DIR}"/out_aura/"${CR_BUILDTYPE}"/$TARGETS --no-sandbox
+"${CR_DIR}"/out/"${CR_BUILDTYPE}"/$TARGETS --no-sandbox
