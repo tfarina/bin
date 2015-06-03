@@ -12,6 +12,8 @@ elif [ "$CR_CONFIG" == "cros" ]; then
   "${CR_DIR}"/build/gyp_chromium -Dchromeos=1 -Goutput_dir=out_cros
 elif [ "$CR_CONFIG" == "android" ]; then
   "${CR_DIR}"/build/gyp_chromium -DOS=android -Goutput_dir=out_android
+elif [ "$CR_CONFIG" == "ios" ]; then
+  "${CR_DIR}"/build/gyp_chromium -DOS=ios -Goutput_dir=out_ios
 elif [ "$CR_CONFIG" == "help" ]; then
   echo "Usage: cr-gyp <cros|android>"
 fi
