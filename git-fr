@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# From: https://github.com/mtklein/bin/blob/master/git-fr
+
+git grep -l "$1" | xargs perl -p -i -e "s/$1/$2/g"
