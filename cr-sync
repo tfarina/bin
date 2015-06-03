@@ -8,7 +8,13 @@
 # Die if any command dies.
 set -e
 
-NUM_JOBS="$(grep -c "^processor" /proc/cpuinfo)"
+PLATFORM="$(uname -s | tr 'A-Z' 'a-z')"
+
+if [[ $PLATFORM == "linux" ]]; then
+  NUM_JOBS="$(grep -c "^processor" /proc/cpuinfo)"
+elif [[ $PLATFORM == "darwin" ]]; then
+  NUM_JOBS="$(sysctl -n hw.ncpu)"
+fi
 
 cd "${HOME}/chromium/src"
 
