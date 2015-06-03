@@ -12,11 +12,11 @@ CR_DIR="${HOME}"/chromium/src/
 # Default build type is Debug.
 CR_BUILDTYPE=Debug
 
-# Default target is chrome.
-TARGETS="$1"
+# Default executable is chrome.
+BINARY="$1"
 
-if [ -z "$TARGETS" ]; then
-  TARGETS="chrome"
+if [ -z "$BINARY" ]; then
+  BINARY="chrome"
 fi
 
-"${CR_DIR}"/out/"${CR_BUILDTYPE}"/$TARGETS --no-sandbox
+"${CR_DIR}"/out/"${CR_BUILDTYPE}"/$BINARY --no-sandbox
