@@ -12,7 +12,13 @@ cd $HOME/chromium/src
 # Default build type is Debug.
 CR_BUILDTYPE=Debug
 
-NUM_JOBS="$(grep -c "^processor" /proc/cpuinfo)"
+PLATFORM="$(uname -s | tr 'A-Z' 'a-z')"
+
+if [[ $PLATFORM == "linux" ]]; then
+  NUM_JOBS="$(grep -c "^processor" /proc/cpuinfo)"
+elif [[ $PLATFORM == "darwin" ]]; then
+  NUM_JOBS="$(sysctl -n hw.ncpu)"
+fi
 
 while getopts ":t:" opt ; do
         case $opt in
