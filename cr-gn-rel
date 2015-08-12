@@ -1,0 +1,3 @@
+#!/bin/bash
+
+gn gen out-gn/Release --args='is_debug=false is_component_build=false symbol_level=1'
