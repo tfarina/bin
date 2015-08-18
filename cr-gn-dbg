@@ -1,0 +1,3 @@
+#!/bin/bash
+
+gn gen out-gn/Debug --args='is_debug=true is_component_build=true'
