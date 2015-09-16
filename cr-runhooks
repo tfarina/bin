@@ -1,0 +1,21 @@
+#!/bin/bash
+#
+# Copyright (c) 2015, Thiago Farina
+#
+# 2015-09-16 Thiago Farina <tfarina@chromium.org>
+#
+
+# Die if any command dies.
+set -e
+
+PLATFORM="$(uname -s | tr 'A-Z' 'a-z')"
+
+if [[ $PLATFORM == "linux" ]]; then
+  NUM_JOBS="$(grep -c "^processor" /proc/cpuinfo)"
+elif [[ $PLATFORM == "darwin" ]]; then
+  NUM_JOBS="$(sysctl -n hw.ncpu)"
+fi
+
+cd "${HOME}/chromium/src"
+
+GYP_CHROMIUM_NO_ACTION=1 gclient runhooks -j"${NUM_JOBS}"
