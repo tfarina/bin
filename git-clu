@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# From: https://github.com/mtklein/bin/blob/9cd3c503d36ca63703fb67e9eff14bed9f1ea086/git-clu
+
+set -e
+
+git cl upload -t "`git log -1 --pretty=%B`"
