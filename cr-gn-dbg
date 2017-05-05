@@ -1,3 +1,5 @@
 #!/bin/bash
 
-gn gen gn-ninja-out/local_linux-dbg --args='is_debug=true is_component_build=true'
+PLATFORM="$(uname -s | tr 'A-Z' 'a-z')"
+
+gn gen gn-ninja-out/local_$PLATFORM-dbg --args='is_debug=true is_component_build=true'
