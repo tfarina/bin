@@ -4,4 +4,4 @@
 
 set -e
 
-git cl upload -t "`git log -1 --pretty=%B`"
+git cl upload --gerrit -t "`git log -1 --pretty=%B`"
