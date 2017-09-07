@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# http://www.commandlinefu.com/commands/view/2818/determine-what-version-of-bind-is-running-on-a-dns-server.
+
+dig -t txt -c chaos version.bind @$1
