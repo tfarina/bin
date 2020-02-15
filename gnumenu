@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+function list-options() {
+	options=("Logout" "Reboot" "Shutdown")
+
+	printf '%s\n' "${options[@]}"
+}
+
+function action() {
+	case "$1" in
+		Logout)
+			bspc quit
+			;;
+		Reboot)
+			systemctl reboot
+			;;
+		Shutdown)
+			systemctl poweroff
+			;;
+		*help)
+			echo "Usage: $0 {Logout|Reboot|Shutdown}"
+			exit 2
+			;;
+	esac
+}
+
+if [[ $# -lt 1 ]]; then
+	action "$(list-options | rofi -dmenu -i -p GNU/Linux Menu)"
+elif [[ $# -lt 2 ]]; then
+	action "$1"
+fi
