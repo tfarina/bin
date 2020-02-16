@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function list-options() {
-	options=("Logout" "Reboot" "Shutdown")
+	options=("Logout" "Restart" "Shutdown")
 
 	printf '%s\n' "${options[@]}"
 }
@@ -11,14 +11,14 @@ function action() {
 		Logout)
 			bspc quit
 			;;
-		Reboot)
+		Restart)
 			systemctl reboot
 			;;
 		Shutdown)
 			systemctl poweroff
 			;;
 		*help)
-			echo "Usage: $0 {Logout|Reboot|Shutdown}"
+			echo "Usage: $0 {Logout|Restart|Shutdown}"
 			exit 2
 			;;
 	esac
