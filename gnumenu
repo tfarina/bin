@@ -25,7 +25,7 @@ function action() {
 }
 
 if [[ $# -lt 1 ]]; then
-	action "$(list-options | rofi -dmenu -i -p GNU/Linux Menu)"
+	action "$(list-options | rofi -dmenu -i -p Select:)"
 elif [[ $# -lt 2 ]]; then
 	action "$1"
 fi
