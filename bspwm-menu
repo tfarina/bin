@@ -76,7 +76,7 @@ class bspwm_menu:
         self.cancel.show()
 
         # Lock button
-        self.lock = gtk.Button("_Lock Screen")
+        self.lock = gtk.Button("Lock")
         self.lock.set_border_width(4)
         self.lock.connect("clicked", self.lock_action)
         self.button_box.pack_start(self.lock)
@@ -90,28 +90,28 @@ class bspwm_menu:
         self.logout.show()
 
         # Suspend button
-        self.suspend = gtk.Button("_Suspend")
+        self.suspend = gtk.Button("Suspend")
         self.suspend.set_border_width(4)
         self.suspend.connect("clicked", self.suspend_action)
         self.button_box.pack_start(self.suspend)
         self.suspend.show()
 
         # Hibernate button
-        self.hibernate = gtk.Button("_Hibernate")
+        self.hibernate = gtk.Button("Hibernate")
         self.hibernate.set_border_width(4)
         self.hibernate.connect("clicked", self.hibernate_action)
         self.button_box.pack_start(self.hibernate)
         self.hibernate.show()
 
         # Reboot button
-        self.reboot = gtk.Button("_Restart...")
+        self.reboot = gtk.Button("Restart...")
         self.reboot.set_border_width(4)
         self.reboot.connect("clicked", self.reboot_action)
         self.button_box.pack_start(self.reboot)
         self.reboot.show()
 
         # Shutdown button
-        self.shutdown = gtk.Button("_Shut Down...")
+        self.shutdown = gtk.Button("Shut Down...")
         self.shutdown.set_border_width(4)
         self.shutdown.connect("clicked", self.shutdown_action)
         self.button_box.pack_start(self.shutdown)
