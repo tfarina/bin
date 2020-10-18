@@ -4,22 +4,22 @@ STEP=5
 BIGSTEP=25
 
 case "$1" in
+    up)
+	pactl set-sink-volume 0 +$STEP%
+        ;;
+    down)
+	pactl set-sink-volume 0 -$STEP%
+	;;
     toggle)
 	pactl set-sink-mute 0 toggle
         ;;
-    raise)
-	pactl set-sink-volume 0 +$STEP%
-        ;;
-    lower)
-	pactl set-sink-volume 0 -$STEP%
-	;;
-    strong_raise)
+    bigup)
 	pactl set-sink-volume 0 +$BIGSTEP%
         ;;
-    strong_lower)
+    bigdown)
 	pactl set-sink-volume 0 -$BIGSTEP%
         ;;
     *)
-	echo "Usage: $0 {toggle|raise|lower|strong_raise|strong_lower}"
+	echo "Usage: $0 {up|down|toggle|bigup|bigdown}"
 	exit 2
 esac
