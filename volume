@@ -5,22 +5,22 @@ BIGSTEP=25
 
 case "$1" in
     up)
-	pactl set-sink-volume 0 +$STEP%
+	pactl set-sink-volume @DEFAULT_SINK@ +$STEP%
         ;;
     down)
-	pactl set-sink-volume 0 -$STEP%
+	pactl set-sink-volume @DEFAULT_SINK@ -$STEP%
 	;;
     toggle)
-	pactl set-sink-mute 0 toggle
+	pactl set-sink-mute @DEFAULT_SINK@ toggle
         ;;
     mute)
-	pactl set-sink-mute 0 1
+	pactl set-sink-mute @DEFAULT_SINK@ 1
         ;;
     bigup)
-	pactl set-sink-volume 0 +$BIGSTEP%
+	pactl set-sink-volume @DEFAULT_SINK@ +$BIGSTEP%
         ;;
     bigdown)
-	pactl set-sink-volume 0 -$BIGSTEP%
+	pactl set-sink-volume @DEFAULT_SINK@ -$BIGSTEP%
         ;;
     *)
 	echo "Usage: $0 {up|down|toggle|mute|bigup|bigdown}"
