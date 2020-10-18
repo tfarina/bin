@@ -13,6 +13,9 @@ case "$1" in
     toggle)
 	pactl set-sink-mute 0 toggle
         ;;
+    mute)
+	pactl set-sink-mute 0 1
+        ;;
     bigup)
 	pactl set-sink-volume 0 +$BIGSTEP%
         ;;
@@ -20,6 +23,6 @@ case "$1" in
 	pactl set-sink-volume 0 -$BIGSTEP%
         ;;
     *)
-	echo "Usage: $0 {up|down|toggle|bigup|bigdown}"
+	echo "Usage: $0 {up|down|toggle|mute|bigup|bigdown}"
 	exit 2
 esac
