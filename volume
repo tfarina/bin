@@ -16,4 +16,7 @@ case "$1" in
     strong_lower)
         amixer --quiet -c 1 set Master 1%-
         ;;
+    *)
+	echo "Usage: $0 {toggle|raise|lower|strong_raise|strong_lower}"
+	exit 2
 esac
