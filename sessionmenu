@@ -14,7 +14,12 @@ chosen="$(echo -e "$options" | rofi -lines 8 -dmenu -p "Session:")"
 
 case $chosen in
     $option0)
-	bspc quit;;
+        if [[ "$DESKTOP_SESSION" == "xfce" ]]; then
+	    xfce4-session-logout --logout
+        elif [[ "$DESKTOP_SESSION" == "bspwm" ]]; then
+	    bspc quit
+	fi
+        ;;
     $option1)
 	systemctl reboot;;
     $option2)
