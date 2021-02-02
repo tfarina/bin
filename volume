@@ -16,6 +16,9 @@ case "$1" in
     mute)
 	pactl set-sink-mute @DEFAULT_SINK@ 1
         ;;
+    unmute)
+	pactl set-sink-mute @DEFAULT_SINK@ 0
+        ;;
     bigup)
 	pactl set-sink-volume @DEFAULT_SINK@ +$BIGSTEP%
         ;;
@@ -23,6 +26,6 @@ case "$1" in
 	pactl set-sink-volume @DEFAULT_SINK@ -$BIGSTEP%
         ;;
     *)
-	echo "Usage: $0 {up|down|toggle|mute|bigup|bigdown}"
+	echo "Usage: $0 {up|down|toggle|mute|unmute|bigup|bigdown}"
 	exit 2
 esac
