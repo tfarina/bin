@@ -18,6 +18,8 @@ case $chosen in
 	    xfce4-session-logout --logout
         elif [[ "$DESKTOP_SESSION" == "bspwm" ]]; then
 	    bspc quit
+        elif [[ "$DESKTOP_SESSION" == "i3" ]]; then
+	    i3-msg exit
 	fi
         ;;
     $restart)
