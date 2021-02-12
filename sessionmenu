@@ -3,25 +3,25 @@
 # https://github.com/cramermarius/rofi-menus/blob/master/scripts/powermenu.sh
 
 # Options to be displayed.
-option0="Logout"
-option1="Restart"
-option2="Shutdown"
+logout="Logout"
+restart="Restart"
+shutdown="Shutdown"
 
 # Options passed into a variable.
-options="$option0\n$option1\n$option2"
+options="$logout\n$restart\n$shutdown"
 
 chosen="$(echo -e "$options" | rofi -lines 8 -dmenu -p "Session:")"
 
 case $chosen in
-    $option0)
+    $logout)
         if [[ "$DESKTOP_SESSION" == "xfce" ]]; then
 	    xfce4-session-logout --logout
         elif [[ "$DESKTOP_SESSION" == "bspwm" ]]; then
 	    bspc quit
 	fi
         ;;
-    $option1)
+    $restart)
 	systemctl reboot;;
-    $option2)
+    $shutdown)
 	systemctl poweroff;;
 esac
