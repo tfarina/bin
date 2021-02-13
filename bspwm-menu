@@ -28,7 +28,7 @@ class bspwm_menu:
 
     def lock_action(self,btn):
         self.disable_buttons()
-        os.system("i3lock -c 000000")
+        os.system("lock")
         gtk.main_quit()
 
     def suspend_action(self,btn):
