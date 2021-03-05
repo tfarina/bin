@@ -9,9 +9,15 @@ for file in ${font_list[*]}; do
   echo $file  
 done
 
-sudo mkdir -p /usr/share/fonts/truetype/menlo
+font_dir=/usr/share/fonts/truetype/menlo
+
+echo "Font Directory: " $font_dir
+
+sudo mkdir -p $font_dir
 
 cd fonts/truetype/menlo
+
+echo "Installing font"
 
 for file in ${font_list[*]}; do
   sudo chown root:root "${file}"
