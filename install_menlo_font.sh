@@ -11,9 +11,12 @@ done
 
 font_dir=/usr/share/fonts/truetype/menlo
 
-echo "Font Directory: " $font_dir
-
-sudo mkdir -p $font_dir
+if [ -d $font_dir ]; then
+  echo "Found directory: " $font_dir
+else
+  echo "Creating directory: " $font_dir
+  sudo mkdir -p $font_dir
+fi
 
 cd fonts/truetype/menlo
 
