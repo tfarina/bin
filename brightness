@@ -1,0 +1,15 @@
+#!/bin/bash
+
+STEP=5
+
+case "$1" in
+    up)
+	brightnessctl set "${STEP:-5}%+" -q
+        ;;
+    down)
+	brightnessctl set "${STEP:-5}%-" -q
+        ;;
+    *)
+	echo "Usage: $0 {up|down}"
+	exit 2
+esac
