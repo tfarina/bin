@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Create disk image
+qemu-img create -f qcow msdos.qcow 32M
