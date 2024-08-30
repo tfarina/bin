@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Create disk image
+qemu-img create -f qcow2 win98.img 512M
