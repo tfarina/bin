@@ -1,0 +1,9 @@
+#!/bin/bash
+
+qemu-system-i386 -cdrom win98.iso \
+		 -hda win98.img \
+		 -m 512 \
+		 -boot c \
+		 -net nic,model=pcnet \
+		 -net user \
+		 -soundhw hda
