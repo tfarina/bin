@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Start qemu
+qemu-system-i386 -m 1M \
+		 -hda msdos33.img \
+		 -net none \
+		 -vga std \
+		 -monitor stdio \
+		 -rtc base=localtime \
+		 -fda msdos33-floppydisk01.img
