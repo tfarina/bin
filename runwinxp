@@ -1,5 +1,3 @@
-qemu-img create -f qcow2 winXPSP3.img 10G
-
 # To Install
 qemu-system-i386 -cdrom en_windows_xp_professional_with_service_pack_3_x86_cd_vl_x14-73974.iso -hda winXPSP3.img -m 512 -boot d -net nic,model=pcnet -net user
 

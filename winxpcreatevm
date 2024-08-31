@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Create disk image
+qemu-img create -f qcow2 winxpsp3.img 10G
