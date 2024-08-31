@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# To get a list of valid sound card names
+qemu-system-i386 -soundhw help
