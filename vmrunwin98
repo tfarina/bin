@@ -4,6 +4,6 @@ qemu-system-i386 -cdrom win98.iso \
 		 -hda win98.img \
 		 -m 512 \
 		 -boot c \
-		 -net nic,model=pcnet \
+		 -net nic,model=ne2k_pci \
 		 -net user \
 		 -soundhw hda
