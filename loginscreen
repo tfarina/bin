@@ -1,0 +1,8 @@
+#!/bin/bash
+
+chvt 7
+sleep 5s
+DISPLAY=:0 XAUTHORITY=/var/run/lightdm/root/:0 xwd -root -out ~/login-screenshot.xwd
+convert ~/login-screenshot.xwd ~/login-screenshot.png
+rm ~/login-screenshot.xwd
+
