@@ -3,6 +3,7 @@
 chvt 7
 sleep 5s
 DISPLAY=:0 XAUTHORITY=/var/run/lightdm/root/:0 xwd -root -out ~/login-screenshot.xwd
-convert ~/login-screenshot.xwd ~/login-screenshot.png
+TIMESTAMP=`date +%Y-%m-%d_%H-%M-%S`
+convert ~/login-screenshot.xwd ~/login-screenshot-$TIMESTAMP.png
 rm ~/login-screenshot.xwd
 
