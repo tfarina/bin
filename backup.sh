@@ -12,12 +12,12 @@ DATE=$(date "+%Y-%m-%d %H:%M:%S")
 HOME_DIRS=(
     "Archives"
     "Backups"
+    "Documents"
     "Music"
     "Notes"
     "Pictures"
     "Resources"
     ".secure"
-    # "Documents"  # excluded due to size
     # "Videos"     # excluded due to size
     # "src"        # excluded due to size
 )
@@ -64,7 +64,7 @@ for dir in "${HOME_DIRS[@]}"; do
     SRC="$HOME/$dir/"
     DEST="$LATEST/$dir/"
     echo "[$DATE] Syncing $SRC -> $DEST" | tee -a "$LOGFILE"
-    rsync -avh --delete $DRYRUN_FLAG "$SRC" "$DEST" >> "$LOGFILE" 2>&1
+    rsync -avh --delete --exclude='ISO/' $DRYRUN_FLAG "$SRC" "$DEST" >> "$LOGFILE" 2>&1
 done
 
 echo "[$DATE] Backup script ($RUN_TYPE) completed." | tee -a "$LOGFILE"
