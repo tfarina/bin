@@ -28,6 +28,21 @@ if ! mountpoint -q "$MOUNT_POINT"; then
     exit 1
 fi
 
+# Calculate total size of folders to back up
+total_size=$(du -sb "${HOME_DIRS[@]/#/$HOME/}" 2>/dev/null | awk '{sum += $1} END {print sum}')
+
+# Get free space on USB drive
+free_space=$(df --output=avail -B1 "$MOUNT_POINT" | tail -1)
+
+echo "Total backup size: $total_size bytes"
+echo "Available free space: $free_space bytes"
+
+if (( total_size > free_space )); then
+    echo "[$DATE] ERROR: Not enough free space on $BACKUP_LABEL for backup."
+    echo "Required: $total_size bytes, Available: $free_space bytes"
+    exit 1
+fi
+
 echo "[$DATE] Starting backup..." | tee -a "$LOGFILE"
 
 # Determine if dry run or real run
