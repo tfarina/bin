@@ -1,9 +1,19 @@
 #!/bin/bash
 
-qemu-system-i386 -cdrom win98.iso \
-		 -hda win98.img \
-		 -m 512 \
-		 -boot c \
-		 -net nic,model=ne2k_pci \
-		 -net user \
-		 -soundhw hda
+# Base directories
+ISO_DIR="$HOME/VMs/isos/windows"
+IMG_DIR="$HOME/VMs/images/windows"
+
+# Files
+ISO_FILE="$ISO_DIR/win98.iso"
+IMG_FILE="$IMG_DIR/win98.img"
+
+# Start QEMU with Windows 98
+qemu-system-i386 \
+    -cdrom "$ISO_FILE" \
+    -hda "$IMG_FILE" \
+    -m 512 \
+    -boot c \
+    -net nic,model=ne2k_pci \
+    -net user \
+    -soundhw hda

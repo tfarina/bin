@@ -1,12 +1,21 @@
 #!/bin/bash
 
-# Start qemu
-qemu-system-i386 -cdrom en_windows_xp_professional_with_service_pack_3_x86_cd_vl_x14-73974.iso \
-		 -hda winxpsp3.img \
-		 -m 1024 \
-		 -boot d \
-		 -net nic,model=pcnet \
-		 -net user \
-		 -smb /srv/samba/share/ \
-		 -soundhw ac97 \
-		 -usb
+# Base directories
+ISO_DIR="$HOME/VMs/isos/windows"
+IMG_DIR="$HOME/VMs/images/windows"
+
+# Files
+ISO_FILE="$ISO_DIR/en_windows_xp_professional_with_service_pack_3_x86_cd_vl_x14-73974.iso"
+IMG_FILE="$IMG_DIR/winxpsp3.img"
+
+# Start QEMU with Windows XP
+qemu-system-i386 \
+    -cdrom "$ISO_FILE" \
+    -hda "$IMG_FILE" \
+    -m 1024 \
+    -boot d \
+    -net nic,model=pcnet \
+    -net user \
+    -smb /srv/samba/share/ \
+    -soundhw ac97 \
+    -usb
