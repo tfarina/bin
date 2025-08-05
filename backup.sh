@@ -17,8 +17,8 @@ HOME_DIRS=(
     "Notes"
     "Pictures"
     "Resources"
+    "Videos"
     ".secure"
-    # "Videos"     # excluded due to size
     # "src"        # excluded due to size
 )
 
