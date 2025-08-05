@@ -1,10 +1,19 @@
 #!/bin/bash
 
-# Start qemu
-qemu-system-i386 -m 1M \
-		 -hda msdos33.img \
-		 -net none \
-		 -vga std \
-		 -monitor stdio \
-		 -rtc base=localtime \
-		 -fda msdos33-floppydisk01.img
+# Base directories
+IMG_DIR="$HOME/VMs/images/ms-dos"
+FLOPPY_DIR="$HOME/VMs/floppies/ms-dos"
+
+# Files
+HDA_IMG="$IMG_DIR/msdos33.img"
+FDA_IMG="$FLOPPY_DIR/msdos33-floppydisk01.img"
+
+# Start QEMU with MS-DOS
+qemu-system-i386 \
+    -m 1M \
+    -hda "$HDA_IMG" \
+    -fda "$FDA_IMG" \
+    -vga std \
+    -net none \
+    -monitor stdio \
+    -rtc base=localtime
