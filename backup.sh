@@ -67,5 +67,16 @@ for dir in "${HOME_DIRS[@]}"; do
     rsync -avh --delete --exclude='ISO/' $DRYRUN_FLAG "$SRC" "$DEST" >> "$LOGFILE" 2>&1
 done
 
+# info.txt: metadata about this backup
+INFO_FILE="$MOUNT_POINT/backups/gateway-mt6707/lp2/info.txt"
+cat > "$INFO_FILE" <<EOF
+Backup Drive for: Thiago's Gateway MT6707
+Purpose: Personal backups (Linux home directory)
+Method: rsync, with --archive and --delete options
+Mount Point: $MOUNT_POINT
+Backup Path: $LATEST
+Backup Date: $DATE
+EOF
+
 echo "[$DATE] Backup script ($RUN_TYPE) completed." | tee -a "$LOGFILE"
 echo "--------------------------------------------------------" >> "$LOGFILE"
