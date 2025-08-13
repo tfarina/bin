@@ -20,7 +20,6 @@ HOME_DIRS=(
     "Resources"
     "Videos"
     ".secure"
-    # "src"        # excluded due to size
 )
 
 # Helpers
