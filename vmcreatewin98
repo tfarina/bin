@@ -1,4 +1,23 @@
 #!/bin/bash
 
+# Configuration
+IMAGES_DIR="$HOME/VMs/images/windows"
+IMG_NAME="win98.img"
+IMG_SIZE="512M"
+IMG_PATH="$IMAGES_DIR/$IMG_NAME"
+
+# Create images directory if it does not exist
+if [ ! -d "$IMAGES_DIR" ]; then
+    mkdir -p "$IMAGES_DIR"
+    echo "Created directory $IMAGES_DIR"
+fi
+
+# Check if image already exists, if yes, do not overwrite
+if [ -e "$IMG_PATH" ]; then
+    echo "Error: Disk image '$IMG_PATH' already exists. Aborting to avoid overwrite."
+    exit 1
+fi
+
 # Create disk image
-qemu-img create -f qcow2 win98.img 512M
+qemu-img create -f qcow2 "$IMG_PATH" "$IMG_SIZE"
+echo "Created disk image at $IMG_PATH with size $IMG_SIZE"
