@@ -6,7 +6,8 @@ MOUNT_POINT="/media/$USER/$BACKUP_LABEL"
 DEST_BASE="$MOUNT_POINT/backups/gateway-mt6707/lp2/home-tfarina"
 LATEST="$DEST_BASE/rsync-latest"
 LOGFILE="$HOME/personal_rsync_backup.log"
-DATE=$(date "+%Y-%m-%d %H:%M:%S")
+DATE_FMT="%Y-%m-%d %H:%M:%S"
+START_TIME="$(date "+$DATE_FMT")"
 
 # Directories inside my home to backup
 HOME_DIRS=(
@@ -22,9 +23,13 @@ HOME_DIRS=(
     # "src"        # excluded due to size
 )
 
+# Helpers
+ts() { date "+$DATE_FMT"; }
+log() { printf '[%s] %s\n' "$(ts)" "$*" | tee -a "$LOGFILE" ; }
+
 # Check if backup drive is mounted
 if ! mountpoint -q "$MOUNT_POINT"; then
-    echo "[$DATE] ERROR: Backup drive '$BACKUP_LABEL' not mounted at $MOUNT_POINT" | tee -a "$LOGFILE"
+    log "ERROR: Backup drive '$BACKUP_LABEL' not mounted at $MOUNT_POINT"
     exit 1
 fi
 
@@ -38,12 +43,12 @@ echo "Total backup size: $total_size bytes"
 echo "Available space (USB drive): $usb_space bytes"
 
 if (( total_size > usb_space )); then
-    echo "[$DATE] ERROR: Not enough free space on $BACKUP_LABEL for backup."
+    log "ERROR: Not enough free space on $BACKUP_LABEL for backup."
     echo "Required: $total_size bytes, Available: $usb_space bytes"
     exit 1
 fi
 
-echo "[$DATE] Starting backup..." | tee -a "$LOGFILE"
+log "Starting backup..."
 
 # Determine if dry run or real run
 if [[ "$1" == "--go" ]]; then
@@ -54,7 +59,7 @@ else
     RUN_TYPE="DRY RUN (no changes)"
 fi
 
-echo "[$DATE] Running backup script ($RUN_TYPE)" | tee -a "$LOGFILE"
+log "Running backup script ($RUN_TYPE)"
 
 # Make sure destination base and latest folder exist
 mkdir -p "$LATEST"
@@ -63,9 +68,11 @@ mkdir -p "$LATEST"
 for dir in "${HOME_DIRS[@]}"; do
     SRC="$HOME/$dir/"
     DEST="$LATEST/$dir/"
-    echo "[$DATE] Syncing $SRC -> $DEST" | tee -a "$LOGFILE"
+    log "Syncing $SRC -> $DEST"
     rsync -avh --delete --exclude='ISO/' $DRYRUN_FLAG "$SRC" "$DEST" >> "$LOGFILE" 2>&1
 done
+
+END_TIME="$(ts)"
 
 # info.txt: metadata about this backup
 INFO_FILE="$MOUNT_POINT/backups/gateway-mt6707/lp2/info.txt"
@@ -74,9 +81,10 @@ Backup Drive for: Thiago's Gateway MT6707
 Purpose: Personal backups (Linux home directory)
 Method: rsync, with --archive and --delete options
 Mount Point: $MOUNT_POINT
-Backup Path: $LATEST
-Backup Date: $DATE
+Backup Path (latest): $LATEST
+Backup Started: $START_TIME
+Backup Finished: $END_TIME
 EOF
 
-echo "[$DATE] Backup script ($RUN_TYPE) completed." | tee -a "$LOGFILE"
+log "Backup script ($RUN_TYPE) completed."
 echo "--------------------------------------------------------" >> "$LOGFILE"
