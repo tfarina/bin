@@ -12,7 +12,7 @@ START_TIME="$(date "+$DATE_FMT")"
 # Directories inside my home to backup
 HOME_DIRS=(
     "Archives"
-    "Backups"
+    "Bookmarks"
     "Documents"
     "Music"
     "Notes"
