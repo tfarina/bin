@@ -1,6 +1,12 @@
 #!/bin/bash
 
-LABEL="KINGSTON_X1"
+ACTION="$1"
+LABEL="$2"
+
+if [[ -z "$ACTION" || -z "$LABEL" ]]; then
+    echo "Usage: $0 {mount|unmount|status} <LABEL>"
+    exit 1
+fi
 
 # Find device by label
 DEVICE=$(lsblk -o NAME,LABEL --raw | grep "$LABEL" | awk '{print "/dev/" $1}')
@@ -10,7 +16,7 @@ if [[ -z "$DEVICE" ]]; then
     exit 1
 fi
 
-case "$1" in
+case "$ACTION" in
     mount)
 	echo "Mounting $DEVICE..."
 	udisksctl mount -b "$DEVICE"
@@ -28,7 +34,8 @@ case "$1" in
 	fi
 	;;
     *)
-	echo "Usage: $0 {mount|unmount|status}"
+	echo "Invalid action: $ACTION"
+	echo "Usage: $0 {mount|unmount|status} <LABEL>"
 	exit 1
 	;;
 esac
