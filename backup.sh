@@ -5,7 +5,7 @@ BACKUP_LABEL="KINGSTON_X1"
 MOUNT_POINT="/media/$USER/$BACKUP_LABEL"
 DEST_BASE="$MOUNT_POINT/backups/gateway-mt6707/lp2/home-tfarina"
 LATEST="$DEST_BASE/rsync-latest"
-LOGFILE="$HOME/personal_rsync_backup.log"
+LOGFILE="$HOME/.logs/personal_rsync_backup.log"
 DATE_FMT="%Y-%m-%d %H:%M:%S"
 START_TIME="$(date "+$DATE_FMT")"
 
@@ -25,6 +25,9 @@ HOME_DIRS=(
 # Helpers
 ts() { date "+$DATE_FMT"; }
 log() { printf '[%s] %s\n' "$(ts)" "$*" | tee -a "$LOGFILE" ; }
+
+# Make sure logs folder exists
+mkdir -p "$HOME/.logs"
 
 # Check if backup drive is mounted
 if ! mountpoint -q "$MOUNT_POINT"; then

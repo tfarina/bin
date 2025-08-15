@@ -11,8 +11,11 @@ BACKUP_LABEL="KINGSTON_X2"
 MOUNT_POINT="/media/$USER/$BACKUP_LABEL"
 DEST_BASE="$MOUNT_POINT/backups/gateway-mt6707/lp2/home-tfarina"
 LATEST="$DEST_BASE/rsync-latest"
-LOGFILE="$HOME/backup_git_projects.log"
+LOGFILE="$HOME/.logs/backup_git_projects.log"
 DATE=$(date "+%Y-%m-%d %H:%M:%S")
+
+# Make sure logs folder exists
+mkdir -p "$HOME/.logs"
 
 # Check if backup drive is mounted
 if ! mountpoint -q "$MOUNT_POINT"; then
