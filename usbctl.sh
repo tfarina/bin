@@ -2,6 +2,7 @@
 
 ACTION="$1"
 LABEL="$2"
+MOUNT_BASE="/media/$USER"
 
 if [[ -z "$ACTION" || -z "$LABEL" ]]; then
     echo "Usage: $0 {mount|unmount|status} <LABEL>"
@@ -16,14 +17,18 @@ if [[ -z "$DEVICE" ]]; then
     exit 1
 fi
 
+
+MOUNTPOINT="$MOUNT_BASE/$LABEL"
+
 case "$ACTION" in
     mount)
-	echo "Mounting $DEVICE..."
-	udisksctl mount -b "$DEVICE"
+	echo "Mounting $DEVICE to $MOUNTPOINT..."
+	sudo mkdir -p "$MOUNTPOINT"
+	sudo mount "$DEVICE" "$MOUNTPOINT"
 	;;
     unmount|umount)
-	echo "Unmounting $DEVICE..."
-	udisksctl unmount -b "$DEVICE"
+	echo "Unmounting $DEVICE from $MOUNTPOINT..."
+	sudo umount "$MOUNTPOINT"
 	;;
     status)
 	MOUNTPOINT=$(lsblk -o NAME,LABEL,MOUNTPOINT --raw | grep "$LABEL" | awk '{print $3}')
