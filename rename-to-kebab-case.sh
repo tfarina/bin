@@ -15,24 +15,32 @@
 # SAFETY:
 #   - By default, runs in dry-run mode (no actual changes made).
 #   - Use --apply to perform actual renaming.
+#   - In --apply mode, all renames are logged to a timestamped file.
 #
 # USAGE:
 #   ./rename-to-kebab-case.sh         # Preview changes (default)
-#   ./rename-to-kebab-case.sh --apply # Actually rename files
+#   ./rename-to-kebab-case.sh --apply # Rename and log changes
 #
 # NOTES:
 #   - Only regular files (not directories) are processed.
 #   - File extensions are preserved and lowercased.
-#   - Prompts before overwriting existing files with the -i flag in mv.
-#   - Logs changes to stdout; can be redirected to a file for manual undo.
+#   - mv -i ensures no overwriting without confirmation.
+#   - Logs changes to stdout.
+#   - Log file format: original_name<TAB>new_name
+#
+# PLANNED:
+#   - A --undo <logfile> mode will be added later to revert changes.
 
 apply_mode=false
 files_processed=0
 files_renamed=0
+log_file=""
 
 # Check for --apply flag
 if [[ "$1" == "--apply" ]]; then
     apply_mode=true
+    timestamp=$(date +"%Y%m%d-%H%M%S")
+    log_file="rename-log-$timestamp.txt"
 elif [[ -n "$1" ]]; then
     echo "Usage: $0 [--apply]"
     exit 1
@@ -45,7 +53,7 @@ for f in *; do
 
     ((files_processed++))
 
-    # Extract filename and extension
+    # Split into base name and extension
     filename="${f%.*}"     # everything before the last dot
     extension="${f##*.}"   # everything after the last dot
 
@@ -74,6 +82,7 @@ for f in *; do
 	if $apply_mode; then
 	    mv -i -- "$f" "$new"
 	    echo "Renamed: '$f' → '$new'"
+	    printf "%s\t%s\n" "$f" "$new" >> "$log_file"
 	else
 	    echo "Would rename: '$f' → '$new'"
         fi
@@ -86,6 +95,7 @@ echo
 if $apply_mode; then
     echo "Processed: $files_processed files"
     echo "Renamed:   $files_renamed files"
+    echo "Log saved to: $log_file"
 else
     echo "Processed: $files_processed files"
     echo "Would rename: $files_renamed files"
