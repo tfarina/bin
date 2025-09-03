@@ -33,7 +33,8 @@
 #     → Perform undo
 #
 # NOTES:
-#   - Only regular files (not directories) are processed in foward mode.
+#   - By default, only regular files are processed.
+#   - Use --include-dirs to also rename directories (first level only).
 #   - File extensions are preserved and lowercased.
 #   - mv -i ensures no overwriting without confirmation.
 #   - Log file format: original_name<TAB>new_name
@@ -42,23 +43,27 @@
 apply_mode=false
 undo_mode=false
 undo_log=""
+include_dirs=false
 files_processed=0
 files_renamed=0
 log_file=""
 
 usage() {
   cat <<EOF
-Usage: $0 [--apply] [--undo <logfile>] | [--undo=<logfile>] [--help]
+Usage: $0 [--apply] [--undo <logfile>] | [--undo=<logfile>] [--include-dirs] [--help]
 
 Options:
   --apply              Actually perform changes (default is dry-run)
   --undo <logfile>     Undo renames listed in <logfile>
   --undo=<logfile>     Same as above (equals form)
+  --include-dirs       Also rename directories (first level only)
   --help               Show this help
 
 Examples:
   $0
   $0 --apply
+  $0 --include-dirs
+  $0 --include-dirs apply
   $0 --undo rename-log-20250817-110049.txt
   $0 --undo=rename-log-20250817-110049.txt --apply
 EOF
@@ -80,6 +85,8 @@ while [[ $# -gt 0 ]]; do
 	--undo=*)
 	    undo_mode=true
 	    undo_log="${1#*=}"; shift ;;
+	--include-dirs)
+	    include_dirs=true; shift ;;
 	-h|--help)
 	    usage; exit 0 ;;
 	--)
@@ -111,17 +118,29 @@ if ! $undo_mode; then
     # Loop over all items in the current directory
     for f in *; do
         # Skip if not a regular file
-        [ -f "$f" ] || continue
+        if [ -f "$f" ]; then
+            is_dir=false
+        elif [ -d "$f" ] && $include_dirs; then
+            is_dir=true
+        else
+            continue
+        fi
 
         ((files_processed++))
 
-        # Split into base name and extension
-        filename="${f%.*}"     # everything before the last dot
-        extension="${f##*.}"   # everything after the last dot
+        if $is_dir; then
+            # For dirs, no extension handling
+            filename="$f"
+            extension=""
+        else
+            # Split into base name and extension
+            filename="${f%.*}"     # everything before the last dot
+            extension="${f##*.}"   # everything after the last dot
 
-        # Handle files without extension
-        if [[ "$f" == "$filename" ]]; then
-	    extension=""
+            # Handle files without extension
+            if [[ "$f" == "$filename" ]]; then
+	        extension=""
+            fi
         fi
 
         # Convert base name to kebab-case
@@ -155,12 +174,12 @@ if ! $undo_mode; then
     # Summary
     echo
     if $apply_mode; then
-        echo "Processed: $files_processed files"
-        echo "Renamed:   $files_renamed files"
+        echo "Processed: $files_processed items"
+        echo "Renamed:   $files_renamed items"
         echo "Log saved to: $log_file"
     else
-        echo "Processed: $files_processed files"
-        echo "Would rename: $files_renamed files"
+        echo "Processed: $files_processed items"
+        echo "Would rename: $files_renamed items"
         echo "Dry-run mode: No changes made. Use --apply to rename."
     fi
     exit 0
