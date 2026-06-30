@@ -39,6 +39,16 @@ names=(
     BRIGHT_BLUE BRIGHT_MAGENTA BRIGHT_CYAN BRIGHT_WHITE
 )
 
+rgb_to_comment() {
+    local rgb=$1
+
+    rgb=${rgb#rgb(}   # Remove leading "rgb("
+    rgb=${rgb%)}      # Remove trailing ")"
+    rgb=${rgb//,/, }  # Add a space after each comma
+
+    printf '%s' "$rgb"
+}
+
 rgb_to_hex() {
         awk -F'[(),]' '
     {
@@ -65,10 +75,28 @@ palette=$(gsettings get \
     "org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:$uuid/" \
     palette)
 
+mapfile -t palette_rgb < <(
+    grep -o 'rgb([^)]*)' <<<"$palette"
+)
 
-grep -o 'rgb([^)]*)' <<<"$palette" |
-while read -r rgb; do
-    hex=$(rgb_to_hex "$rgb")
-    printf "#define %-15s %s\n" "${names[0]}" "$hex"
-    names=("${names[@]:1}")
+echo "! RGB table"
+echo "! ---------"
+echo
+
+for i in "${!palette_rgb[@]}"; do
+    printf '! %-14s = %s\n' \
+	   "${names[i]}" \
+	   "$(rgb_to_comment "${palette_rgb[i]}")"
+done
+
+echo
+
+echo "! Hexadecimal values"
+echo "! ------------------"
+echo
+
+for i in "${!palette_rgb[@]}"; do
+    printf "#define %-14s %s\n" \
+	   "${names[i]}" \
+	   "$(rgb_to_hex "${palette_rgb[i]}")"
 done
