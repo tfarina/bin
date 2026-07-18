@@ -14,10 +14,10 @@ HOME_DIRS=(
     "Archives"
     "Bookmarks"
     "Documents"
+    "Library"
     "Music"
     "Notes"
     "Pictures"
-    "Resources"
     "Videos"
     ".secure"
 )
