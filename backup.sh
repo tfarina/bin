@@ -19,7 +19,7 @@ HOME_DIRS=(
     "Notes"
     "Pictures"
     "Videos"
-    ".secure"
+    ".vault"
 )
 
 # Helpers
