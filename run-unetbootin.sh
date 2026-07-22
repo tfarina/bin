@@ -14,7 +14,8 @@
 # for writing to USB drives, so we use `sudo env` to ensure the variable
 # is passed correctly.
 
-UNETBOOTIN_BIN="./unetbootin-linux-702.bin"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+UNETBOOTIN_BIN="$SCRIPT_DIR/unetbootin-linux-702.bin"
 
 if [[ ! -x "$UNETBOOTIN_BIN" ]]; then
     echo "Error: '$UNETBOOTIN_BIN' not found or not executable."
