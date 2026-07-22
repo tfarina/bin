@@ -24,7 +24,7 @@ case "$ACTION" in
     mount)
 	echo "Mounting $DEVICE to $MOUNTPOINT..."
 	sudo mkdir -p "$MOUNTPOINT"
-	sudo mount "$DEVICE" "$MOUNTPOINT"
+	sudo mount -o rw,uid=$(id -u),gid=$(id -g),fmask=0022,dmask=0022,utf8=1,shortname=mixed "$DEVICE" "$MOUNTPOINT"
 	;;
     unmount|umount)
 	echo "Unmounting $DEVICE from $MOUNTPOINT..."
