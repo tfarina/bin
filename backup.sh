@@ -1,8 +1,41 @@
 #!/bin/bash
 
-# Configuration
-BACKUP_LABEL="KINGSTON_X1"
-MOUNT_POINT="/media/$USER/$BACKUP_LABEL"
+DEVICE_LABEL=""
+DRYRUN_FLAG="--dry-run"
+RUN_TYPE="DRY RUN (no changes)"
+
+for arg in "$@"; do
+    case "$arg" in
+        --go)
+            DRYRUN_FLAG=""
+            RUN_TYPE="REAL RUN"
+            ;;
+        --help|-h)
+            echo "Usage: $0 [--go] <LABEL>"
+            exit 0
+            ;;
+        -*)
+            echo "Unknown option: $arg" >&2
+            echo "Usage: $0 [--go] <LABEL>" >&2
+            exit 1
+            ;;
+        *)
+            if [[ -n "$DEVICE_LABEL" ]]; then
+                echo "Too many arguments" >&2
+                echo "Usage: $0 [--go] <LABEL>" >&2
+                exit 1
+            fi
+            DEVICE_LABEL="$arg"
+            ;;
+    esac
+done
+
+if [[ -z "$DEVICE_LABEL" ]]; then
+    echo "Usage: $0 [--go] <LABEL>" >&2
+    exit 1
+fi
+
+MOUNT_POINT="/media/$USER/$DEVICE_LABEL"
 DEST_BASE="$MOUNT_POINT/backups/gateway-mt6707/lp2/home-tfarina"
 LATEST="$DEST_BASE/rsync-latest"
 LOGFILE="$HOME/.logs/personal_rsync_backup.log"
@@ -31,7 +64,7 @@ mkdir -p "$HOME/.logs"
 
 # Check if backup drive is mounted
 if ! mountpoint -q "$MOUNT_POINT"; then
-    log "ERROR: Backup drive '$BACKUP_LABEL' not mounted at $MOUNT_POINT"
+    log "ERROR: Backup drive '$DEVICE_LABEL' not mounted at $MOUNT_POINT"
     exit 1
 fi
 
@@ -45,21 +78,12 @@ echo "Total backup size: $total_size bytes"
 echo "Available space (USB drive): $usb_space bytes"
 
 if (( total_size > usb_space )); then
-    log "ERROR: Not enough free space on $BACKUP_LABEL for backup."
+    log "ERROR: Not enough free space on $DEVICE_LABEL for backup."
     echo "Required: $total_size bytes, Available: $usb_space bytes"
     exit 1
 fi
 
 log "Starting backup..."
-
-# Determine if dry run or real run
-if [[ "$1" == "--go" ]]; then
-    DRYRUN_FLAG=""
-    RUN_TYPE="REAL RUN"
-else
-    DRYRUN_FLAG="--dry-run"
-    RUN_TYPE="DRY RUN (no changes)"
-fi
 
 log "Running backup script ($RUN_TYPE)"
 
