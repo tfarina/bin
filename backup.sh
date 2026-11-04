@@ -69,17 +69,16 @@ if ! mountpoint -q "$MOUNT_POINT"; then
 fi
 
 # Calculate total size of folders to back up
-total_size=$(du -sb "${HOME_DIRS[@]/#/$HOME/}" 2>/dev/null | awk '{sum += $1} END {print sum}')
+backup_size=$(du -sb "${HOME_DIRS[@]/#/$HOME/}" 2>/dev/null | awk '{sum += $1} END {print sum}')
 
 # Get total size of USB drive (in bytes)
-usb_space=$(df --output=size -B1 "$MOUNT_POINT" | tail -1)
+filesystem_size=$(df --output=size -B1 "$MOUNT_POINT" | tail -1)
 
-echo "Total backup size: $total_size bytes"
-echo "Available space (USB drive): $usb_space bytes"
+echo "Estimated backup size: $backup_size bytes"
+echo "USB filesystem capacity: $filesystem_size bytes"
 
-if (( total_size > usb_space )); then
-    log "ERROR: Not enough free space on $DEVICE_LABEL for backup."
-    echo "Required: $total_size bytes, Available: $usb_space bytes"
+if (( backup_size > filesystem_size )); then
+    log "ERROR: Estimated backup size exceeds the capacity of $DEVICE_LABEL."
     exit 1
 fi
 
