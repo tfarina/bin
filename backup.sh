@@ -68,8 +68,13 @@ if ! mountpoint -q "$MOUNT_POINT"; then
     exit 1
 fi
 
-# Calculate total size of folders to back up
-backup_size=$(du -sb "${HOME_DIRS[@]/#/$HOME/}" 2>/dev/null | awk '{sum += $1} END {print sum}')
+# Calculate the estimated size of the backup sources.
+if ! du_output=$(du -sb -c -- "${HOME_DIRS[@]/#/$HOME/}"); then
+    log "ERROR: Could not calculate the backup size; see du errors above."
+    exit 1
+fi
+
+backup_size=$(awk 'END { print $1 }' <<< "$du_output")
 
 # Get total size of USB drive (in bytes)
 filesystem_size=$(df --output=size -B1 "$MOUNT_POINT" | tail -1)
