@@ -1,12 +1,14 @@
 #!/bin/bash
 
 DEVICE_LABEL=""
+IS_DRY_RUN=true
 DRYRUN_FLAG="--dry-run"
 RUN_TYPE="DRY RUN (no changes)"
 
 for arg in "$@"; do
     case "$arg" in
         --go)
+            IS_DRY_RUN=false
             DRYRUN_FLAG=""
             RUN_TYPE="REAL RUN"
             ;;
@@ -113,7 +115,7 @@ END_TIME="$(ts)"
 
 # info.txt: metadata about this backup
 INFO_FILE="$MOUNT_POINT/backups/gateway-mt6707/lp2/info.txt"
-if [[ -z "$DRYRUN_FLAG" ]]; then
+if [[ "$IS_DRY_RUN" == false ]]; then
     cat > "$INFO_FILE" <<EOF
 Backup Drive for: Thiago's Gateway MT6707
 Purpose: Personal backups (Linux home directory)
