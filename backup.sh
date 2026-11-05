@@ -113,7 +113,8 @@ END_TIME="$(ts)"
 
 # info.txt: metadata about this backup
 INFO_FILE="$MOUNT_POINT/backups/gateway-mt6707/lp2/info.txt"
-cat > "$INFO_FILE" <<EOF
+if [[ -z "$DRYRUN_FLAG" ]]; then
+    cat > "$INFO_FILE" <<EOF
 Backup Drive for: Thiago's Gateway MT6707
 Purpose: Personal backups (Linux home directory)
 Method: rsync, with --archive and --delete options
@@ -122,6 +123,7 @@ Backup Path (latest): $LATEST
 Backup Started: $START_TIME
 Backup Finished: $END_TIME
 EOF
+fi
 
 log "Backup script ($RUN_TYPE) completed."
 echo "--------------------------------------------------------" >> "$LOGFILE"
