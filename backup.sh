@@ -76,11 +76,18 @@ fi
 
 backup_size=$(awk 'END { print $1 }' <<< "$du_output")
 
-# Get total size of USB drive (in bytes)
-filesystem_size=$(df --output=size -B1 "$MOUNT_POINT" | tail -1)
+# Get total capacity and available space on the USB filesystem (in bytes).
+if ! filesystem_stats=$(df --output=size,avail -B1 "$MOUNT_POINT"); then
+    log "ERROR: Could not read USB filesystem capacity."
+    exit 1
+fi
+
+read -r filesystem_size filesystem_free \
+    <<< "$(tail -n 1 <<< "$filesystem_stats")"
 
 echo "Estimated backup size: $backup_size bytes"
 echo "USB filesystem capacity: $filesystem_size bytes"
+echo "Free space on USB filesystem: $filesystem_free bytes"
 
 if (( backup_size > filesystem_size )); then
     log "ERROR: Estimated backup size exceeds the capacity of $DEVICE_LABEL."
