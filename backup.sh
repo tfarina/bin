@@ -101,7 +101,9 @@ log "Starting backup..."
 log "Running backup script ($RUN_TYPE)"
 
 # Make sure destination base and latest folder exist
-mkdir -p "$LATEST"
+if [[ "$IS_DRY_RUN" == false ]]; then
+    mkdir -p "$LATEST"
+fi
 
 # Loop through each directory and rsync it
 for dir in "${HOME_DIRS[@]}"; do
