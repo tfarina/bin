@@ -70,6 +70,14 @@ if ! mountpoint -q "$MOUNT_POINT"; then
     exit 1
 fi
 
+log "Target: $DEVICE_LABEL ($MOUNT_POINT)"
+
+if [[ "$IS_DRY_RUN" == true ]]; then
+    log "Mode: DRY RUN - rsync changes will not be applied"
+else
+    log "Mode: LIVE RUN - rsync changes, including deletions, will be applied"
+fi
+
 # Calculate the estimated size of the backup sources.
 if ! du_output=$(du -sb -c -- "${HOME_DIRS[@]/#/$HOME/}"); then
     log "ERROR: Could not calculate the backup size; see du errors above."
@@ -80,25 +88,23 @@ backup_size=$(awk 'END { print $1 }' <<< "$du_output")
 
 # Get total capacity and available space on the USB filesystem (in bytes).
 if ! filesystem_stats=$(df --output=size,avail -B1 "$MOUNT_POINT"); then
-    log "ERROR: Could not read USB filesystem capacity."
+    log "ERROR: Could not read USB filesystem capacity and free space."
     exit 1
 fi
 
 read -r filesystem_size filesystem_free \
     <<< "$(tail -n 1 <<< "$filesystem_stats")"
 
-echo "Estimated backup size: $backup_size bytes"
-echo "USB filesystem capacity: $filesystem_size bytes"
-echo "Free space on USB filesystem: $filesystem_free bytes"
+log "Estimated backup size: $backup_size bytes"
+log "USB filesystem capacity: $filesystem_size bytes"
+log "Free space on USB filesystem: $filesystem_free bytes"
 
 if (( backup_size > filesystem_size )); then
     log "ERROR: Estimated backup size exceeds the capacity of $DEVICE_LABEL."
     exit 1
 fi
 
-log "Starting backup..."
-
-log "Running backup script ($RUN_TYPE)"
+log "Preflight phase completed; starting the backup."
 
 # Make sure destination base and latest folder exist
 if [[ "$IS_DRY_RUN" == false ]]; then
@@ -129,5 +135,10 @@ Backup Finished: $END_TIME
 EOF
 fi
 
-log "Backup script ($RUN_TYPE) completed."
+if [[ "$IS_DRY_RUN" == true ]]; then
+    log "Dry run finished; no backup files were changed."
+else
+    log "Backup run finished."
+fi
+
 echo "--------------------------------------------------------" >> "$LOGFILE"
