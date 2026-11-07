@@ -129,8 +129,27 @@ done
 
 END_TIME="$(ts)"
 
+if [[ "$RSYNC_FAILED" == true ]]; then
+    result=1
+    rsync_status="failed"
+
+    if [[ "$IS_DRY_RUN" == true ]]; then
+        log "Dry run finished with one or more rsync errors; no backup changes were applied."
+    else
+        log "Backup run finished with one or more rsync errors."
+    fi
+elif [[ "$IS_DRY_RUN" == true ]]; then
+    result=0
+    log "Dry run finished; no backup files were changed."
+else
+    result=0
+    rsync_status="succeeded"
+    log "The backup completed successfully."
+fi
+
 # info.txt: metadata about this backup
 INFO_FILE="$MOUNT_POINT/backups/gateway-mt6707/lp2/info.txt"
+
 if [[ "$IS_DRY_RUN" == false ]]; then
     cat > "$INFO_FILE" <<EOF
 Backup Drive for: Thiago's Gateway MT6707
@@ -140,22 +159,8 @@ Mount Point: $MOUNT_POINT
 Backup Path (latest): $LATEST
 Backup Started: $START_TIME
 Backup Finished: $END_TIME
+Rsync Status: $rsync_status
 EOF
-fi
-
-if [[ "$RSYNC_FAILED" == true ]]; then
-    if [[ "$IS_DRY_RUN" == true ]]; then
-        log "Dry run finished with one or more rsync errors; no backup changes were applied."
-    else
-        log "Backup run finished with one or more rsync errors."
-    fi
-    result=1
-elif [[ "$IS_DRY_RUN" == true ]]; then
-    log "Dry run finished; no backup files were changed."
-    result=0
-else
-    log "The backup completed successfully."
-    result=0
 fi
 
 echo "--------------------------------------------------------" >> "$LOGFILE"
