@@ -2,14 +2,13 @@
 
 DEVICE_LABEL=""
 IS_DRY_RUN=true
-DRYRUN_FLAG="--dry-run"
 RUN_TYPE="DRY RUN (no changes)"
+rsync_options=()
 
 for arg in "$@"; do
     case "$arg" in
         --go)
             IS_DRY_RUN=false
-            DRYRUN_FLAG=""
             RUN_TYPE="REAL RUN"
             ;;
         --help|-h)
@@ -31,6 +30,10 @@ for arg in "$@"; do
             ;;
     esac
 done
+
+if [[ "$IS_DRY_RUN" == true ]]; then
+    rsync_options+=("--dry-run")
+fi
 
 if [[ -z "$DEVICE_LABEL" ]]; then
     echo "Usage: $0 [--go] <LABEL>" >&2
@@ -118,7 +121,7 @@ for dir in "${HOME_DIRS[@]}"; do
     SRC="$HOME/$dir/"
     DEST="$LATEST/$dir/"
     log "Syncing $SRC -> $DEST"
-    if rsync -avh --delete --exclude='ISO/' $DRYRUN_FLAG "$SRC" "$DEST" >> "$LOGFILE" 2>&1; then
+    if rsync -avh --delete --exclude='ISO/' "${rsync_options[@]}" "$SRC" "$DEST" >> "$LOGFILE" 2>&1; then
         :
     else
         rsync_status=$?
