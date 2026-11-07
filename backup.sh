@@ -2,14 +2,12 @@
 
 DEVICE_LABEL=""
 IS_DRY_RUN=true
-RUN_TYPE="DRY RUN (no changes)"
 rsync_options=()
 
 for arg in "$@"; do
     case "$arg" in
         --go)
             IS_DRY_RUN=false
-            RUN_TYPE="REAL RUN"
             ;;
         --help|-h)
             echo "Usage: $0 [--go] <LABEL>"
