@@ -153,14 +153,14 @@ INFO_FILE="$MOUNT_POINT/backups/gateway-mt6707/lp2/info.txt"
 
 if [[ "$IS_DRY_RUN" == false ]]; then
     cat > "$INFO_FILE" <<EOF
-Backup Drive for: Thiago's Gateway MT6707
-Purpose: Personal backups (Linux home directory)
-Method: rsync, with --archive and --delete options
-Mount Point: $MOUNT_POINT
-Backup Path (latest): $LATEST
-Backup Started: $START_TIME
-Backup Finished: $END_TIME
-Rsync Status: $rsync_status
+Backup device: $DEVICE_LABEL
+Purpose: Personal backup of the Linux home directory
+Method: rsync archive; delete destination files absent from source; exclude ISO/ directories
+Mount point: $MOUNT_POINT
+Latest backup path: $LATEST
+Backup started: $START_TIME
+Backup finished: $END_TIME
+Rsync result: $rsync_status
 EOF
 fi
 
