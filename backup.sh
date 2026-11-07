@@ -111,12 +111,20 @@ if [[ "$IS_DRY_RUN" == false ]]; then
     mkdir -p "$LATEST"
 fi
 
+RSYNC_FAILED=false
+
 # Loop through each directory and rsync it
 for dir in "${HOME_DIRS[@]}"; do
     SRC="$HOME/$dir/"
     DEST="$LATEST/$dir/"
     log "Syncing $SRC -> $DEST"
-    rsync -avh --delete --exclude='ISO/' $DRYRUN_FLAG "$SRC" "$DEST" >> "$LOGFILE" 2>&1
+    if rsync -avh --delete --exclude='ISO/' $DRYRUN_FLAG "$SRC" "$DEST" >> "$LOGFILE" 2>&1; then
+        :
+    else
+        rsync_status=$?
+        RSYNC_FAILED=true
+        log "ERROR: rsync failed for $SRC (exit status $rsync_status)."
+    fi
 done
 
 END_TIME="$(ts)"
@@ -135,10 +143,20 @@ Backup Finished: $END_TIME
 EOF
 fi
 
-if [[ "$IS_DRY_RUN" == true ]]; then
+if [[ "$RSYNC_FAILED" == true ]]; then
+    if [[ "$IS_DRY_RUN" == true ]]; then
+        log "Dry run finished with one or more rsync errors; no backup changes were applied."
+    else
+        log "Backup run finished with one or more rsync errors."
+    fi
+    result=1
+elif [[ "$IS_DRY_RUN" == true ]]; then
     log "Dry run finished; no backup files were changed."
+    result=0
 else
-    log "Backup run finished."
+    log "The backup completed successfully."
+    result=0
 fi
 
 echo "--------------------------------------------------------" >> "$LOGFILE"
+exit "$result"
