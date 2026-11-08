@@ -42,7 +42,7 @@ MOUNT_POINT="/media/$USER/$DEVICE_LABEL"
 DEST_BASE="$MOUNT_POINT/backups/gateway-mt6707/lp2/home-tfarina"
 LATEST="$DEST_BASE/rsync-latest"
 LOGFILE="$HOME/.logs/personal_rsync_backup.log"
-DATE_FMT="%Y-%m-%d %H:%M:%S"
+DATE_FMT="%Y-%m-%dT%H:%M:%S%z"
 START_TIME="$(date "+$DATE_FMT")"
 
 # Directories inside my home to backup
@@ -59,7 +59,7 @@ HOME_DIRS=(
 )
 
 # Helpers
-ts() { date "+$DATE_FMT"; }
+ts() { date "+%Y-%m-%d %H:%M:%S"; }
 log() { printf '[%s] %s\n' "$(ts)" "$*" | tee -a "$LOGFILE" ; }
 
 # Make sure logs folder exists
@@ -128,7 +128,7 @@ for dir in "${HOME_DIRS[@]}"; do
     fi
 done
 
-END_TIME="$(ts)"
+END_TIME="$(date "+$DATE_FMT")"
 
 if [[ "$RSYNC_FAILED" == true ]]; then
     result=1
