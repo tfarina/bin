@@ -122,9 +122,9 @@ for dir in "${HOME_DIRS[@]}"; do
     if rsync -avh --delete --exclude='ISO/' "${rsync_options[@]}" "$SRC" "$DEST" >> "$LOGFILE" 2>&1; then
         :
     else
-        rsync_status=$?
+        rsync_exit_code=$?
         RSYNC_FAILED=true
-        log "ERROR: rsync failed for $SRC (exit status $rsync_status)."
+        log "ERROR: rsync failed for $SRC (exit code $rsync_exit_code)."
     fi
 done
 
@@ -132,7 +132,7 @@ END_TIME="$(date "+$DATE_FMT")"
 
 if [[ "$RSYNC_FAILED" == true ]]; then
     result=1
-    rsync_status="failed"
+    rsync_result="failed"
 
     if [[ "$IS_DRY_RUN" == true ]]; then
         log "Dry run finished with one or more rsync errors; no backup changes were applied."
@@ -144,7 +144,7 @@ elif [[ "$IS_DRY_RUN" == true ]]; then
     log "Dry run finished; no backup files were changed."
 else
     result=0
-    rsync_status="succeeded"
+    rsync_result="succeeded"
     log "The backup completed successfully."
 fi
 
@@ -160,7 +160,7 @@ Mount point: $MOUNT_POINT
 Latest backup path: $LATEST
 Backup started: $START_TIME
 Backup finished: $END_TIME
-Rsync result: $rsync_status
+Rsync result: $rsync_result
 EOF
     then
         log "ERROR: Could not write backup metadata to $INFO_FILE."
