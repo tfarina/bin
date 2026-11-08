@@ -38,9 +38,9 @@ if [[ -z "$DEVICE_LABEL" ]]; then
     exit 1
 fi
 
+host=$(hostname)
 MOUNT_POINT="/media/$USER/$DEVICE_LABEL"
-DEST_BASE="$MOUNT_POINT/backups/gateway-mt6707/lp2/home-tfarina"
-LATEST="$DEST_BASE/rsync-latest"
+DEST_BASE="$MOUNT_POINT/backup/$host/$USER/home"
 LOGFILE="$HOME/.logs/personal_rsync_backup.log"
 DATE_FMT="%Y-%m-%dT%H:%M:%S%z"
 START_TIME="$(date "+$DATE_FMT")"
@@ -107,9 +107,9 @@ fi
 
 log "Preflight phase completed; starting the backup."
 
-# Make sure destination base and latest folder exist
+# Make sure destination folder exist
 if [[ "$IS_DRY_RUN" == false ]]; then
-    mkdir -p "$LATEST"
+    mkdir -p "$DEST_BASE"
 fi
 
 RSYNC_FAILED=false
@@ -117,7 +117,7 @@ RSYNC_FAILED=false
 # Loop through each directory and rsync it
 for dir in "${HOME_DIRS[@]}"; do
     SRC="$HOME/$dir/"
-    DEST="$LATEST/$dir/"
+    DEST="$DEST_BASE/$dir/"
     log "Syncing $SRC -> $DEST"
     if rsync -avh --delete --exclude='ISO/' "${rsync_options[@]}" "$SRC" "$DEST" >> "$LOGFILE" 2>&1; then
         :
@@ -149,7 +149,7 @@ else
 fi
 
 # Write metadata about the completed backup run.
-INFO_FILE="$MOUNT_POINT/backups/gateway-mt6707/lp2/info.txt"
+INFO_FILE="$MOUNT_POINT/backup/$host/info.txt"
 
 if [[ "$IS_DRY_RUN" == false ]]; then
     if ! cat > "$INFO_FILE" <<EOF
@@ -157,7 +157,7 @@ Backup device: $DEVICE_LABEL
 Purpose: Personal backup of the Linux home directory
 Method: rsync archive; delete destination files absent from source; exclude ISO/ directories
 Mount point: $MOUNT_POINT
-Latest backup path: $LATEST
+Backup path: $DEST_BASE
 Backup started: $START_TIME
 Backup finished: $END_TIME
 Rsync result: $rsync_result
