@@ -42,6 +42,7 @@ host=$(hostname)
 MOUNT_POINT="/media/$USER/$DEVICE_LABEL"
 DEST_BASE="$MOUNT_POINT/backup/$host/$USER/home"
 LOGFILE="$HOME/.logs/personal_rsync_backup.log"
+INFO_FILE="$DEST_BASE/info.txt"
 DATE_FMT="%Y-%m-%dT%H:%M:%S%z"
 START_TIME="$(date "+$DATE_FMT")"
 
@@ -149,8 +150,6 @@ else
 fi
 
 # Write metadata about the completed backup run.
-INFO_FILE="$MOUNT_POINT/backup/$host/info.txt"
-
 if [[ "$IS_DRY_RUN" == false ]]; then
     if ! cat > "$INFO_FILE" <<EOF
 Backup device: $DEVICE_LABEL
