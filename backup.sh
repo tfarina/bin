@@ -148,11 +148,11 @@ else
     log "The backup completed successfully."
 fi
 
-# info.txt: metadata about this backup
+# Write metadata about the completed backup run.
 INFO_FILE="$MOUNT_POINT/backups/gateway-mt6707/lp2/info.txt"
 
 if [[ "$IS_DRY_RUN" == false ]]; then
-    cat > "$INFO_FILE" <<EOF
+    if ! cat > "$INFO_FILE" <<EOF
 Backup device: $DEVICE_LABEL
 Purpose: Personal backup of the Linux home directory
 Method: rsync archive; delete destination files absent from source; exclude ISO/ directories
@@ -162,6 +162,10 @@ Backup started: $START_TIME
 Backup finished: $END_TIME
 Rsync result: $rsync_status
 EOF
+    then
+        log "ERROR: Could not write backup metadata to $INFO_FILE."
+        result=1
+    fi
 fi
 
 echo "--------------------------------------------------------" >> "$LOGFILE"
