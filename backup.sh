@@ -132,22 +132,12 @@ done
 END_TIME="$(date "+$DATE_FMT")"
 
 if [[ "$RSYNC_FAILED" == true ]]; then
-    result=1
     rsync_result="failed"
-
-    if [[ "$IS_DRY_RUN" == true ]]; then
-        log "Dry run finished with one or more rsync errors; no backup changes were applied."
-    else
-        log "Backup run finished with one or more rsync errors."
-    fi
-elif [[ "$IS_DRY_RUN" == true ]]; then
-    result=0
-    log "Dry run finished; no backup files were changed."
 else
-    result=0
     rsync_result="succeeded"
-    log "The backup completed successfully."
 fi
+
+METADATA_WRITE_FAILED=false
 
 # Write metadata about the completed backup run.
 if [[ "$IS_DRY_RUN" == false ]]; then
@@ -163,7 +153,32 @@ Rsync result: $rsync_result
 EOF
     then
         log "ERROR: Could not write backup metadata to $INFO_FILE."
+        METADATA_WRITE_FAILED=true
+    fi
+fi
+
+if [[ "$IS_DRY_RUN" == true ]]; then
+    if [[ "$RSYNC_FAILED" == true ]]; then
         result=1
+        log "Dry run finished with one or more rsync errors; no backup changes were applied."
+    else
+        result=0
+        log "Dry run finished successfully; no backup files were changed."
+    fi
+else
+    if [[ "$RSYNC_FAILED" == true ]]; then
+        result=1
+        if [[ "$METADATA_WRITE_FAILED" == true ]]; then
+            log "Backup run finished with one or more rsync errors and the metadata could not be written."
+        else
+            log "Backup run finished with one or more rsync errors."
+        fi
+    elif [[ "$METADATA_WRITE_FAILED" == true ]]; then
+        result=1
+        log "Backup run finished but metadata could not be written."
+    else
+        result=0
+        log "The backup completed successfully."
     fi
 fi
 
