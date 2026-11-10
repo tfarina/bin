@@ -41,7 +41,8 @@ fi
 host=$(hostname)
 MOUNT_POINT="/media/$USER/$DEVICE_LABEL"
 DEST_BASE="$MOUNT_POINT/backup/$host/$USER/home"
-LOGFILE="$HOME/.logs/personal_rsync_backup.log"
+STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/personal-rsync-backup"
+LOG_FILE="$STATE_DIR/backup.log"
 INFO_FILE="$DEST_BASE/info.txt"
 DATE_FMT="%Y-%m-%dT%H:%M:%S%z"
 START_TIME="$(date "+$DATE_FMT")"
@@ -61,10 +62,10 @@ HOME_DIRS=(
 
 # Helpers
 ts() { date "+%Y-%m-%d %H:%M:%S"; }
-log() { printf '[%s] %s\n' "$(ts)" "$*" | tee -a "$LOGFILE" ; }
+log() { printf '[%s] %s\n' "$(ts)" "$*" | tee -a "$LOG_FILE" ; }
 
-# Make sure logs folder exists
-mkdir -p "$HOME/.logs"
+# Make sure the log directory exists
+mkdir -p "$STATE_DIR"
 
 # Check if backup drive is mounted
 if ! mountpoint -q "$MOUNT_POINT"; then
@@ -120,7 +121,7 @@ for dir in "${HOME_DIRS[@]}"; do
     SRC="$HOME/$dir/"
     DEST="$DEST_BASE/$dir/"
     log "Syncing $SRC -> $DEST"
-    if rsync -avh --delete --exclude='ISO/' "${rsync_options[@]}" "$SRC" "$DEST" >> "$LOGFILE" 2>&1; then
+    if rsync -avh --delete --exclude='ISO/' "${rsync_options[@]}" "$SRC" "$DEST" >> "$LOG_FILE" 2>&1; then
         :
     else
         rsync_exit_code=$?
@@ -182,5 +183,5 @@ else
     fi
 fi
 
-echo "--------------------------------------------------------" >> "$LOGFILE"
+echo "--------------------------------------------------------" >> "$LOG_FILE"
 exit "$result"
