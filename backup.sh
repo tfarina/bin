@@ -2,7 +2,7 @@
 
 DEVICE_LABEL=""
 IS_DRY_RUN=true
-rsync_options=()
+rsync_options=("-avh" "--delete")
 
 for arg in "$@"; do
     case "$arg" in
@@ -121,7 +121,7 @@ for dir in "${HOME_DIRS[@]}"; do
     SRC="$HOME/$dir/"
     DEST="$DEST_BASE/$dir/"
     log "Syncing $SRC -> $DEST"
-    if rsync -avh --delete --exclude='ISO/' "${rsync_options[@]}" "$SRC" "$DEST" >> "$LOG_FILE" 2>&1; then
+    if rsync "${rsync_options[@]}" --exclude='ISO/' "$SRC" "$DEST" >> "$LOG_FILE" 2>&1; then
         :
     else
         rsync_exit_code=$?
