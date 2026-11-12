@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Base directories
-ISO_DIR="$HOME/VMs/isos/windows"
+ISO_DIR="$HOME/Disk-Images/ISO/Windows"
 IMG_DIR="$HOME/VMs/images/windows"
 
 # Files
