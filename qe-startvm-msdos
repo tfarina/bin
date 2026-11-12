@@ -2,7 +2,7 @@
 
 # Base directories
 IMG_DIR="$HOME/VMs/images/ms-dos"
-FLOPPY_DIR="$HOME/VMs/floppies/ms-dos"
+FLOPPY_DIR="$HOME/Disk-Images/Floppy/MS-DOS"
 
 # Files
 HDA_IMG="$IMG_DIR/msdos33.img"
