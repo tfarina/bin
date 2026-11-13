@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Base directories
-IMG_DIR="$HOME/VMs/images/ms-dos"
+IMG_DIR="$HOME/QEmu/Virtual-Machines"
 FLOPPY_DIR="$HOME/Disk-Images/Floppy/MS-DOS"
 
 # Files

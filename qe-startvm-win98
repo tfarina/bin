@@ -2,7 +2,7 @@
 
 # Base directories
 ISO_DIR="$HOME/Disk-Images/ISO/Windows"
-IMG_DIR="$HOME/VMs/images/windows"
+IMG_DIR="$HOME/QEmu/Virtual-Machines"
 
 # Files
 ISO_FILE="$ISO_DIR/win98.iso"
