@@ -143,6 +143,8 @@ metadataWriteFailed=false
 # Write metadata about the completed backup run.
 if [[ "$isDryRun" == false ]]; then
     if ! cat > "$infoFile" <<EOF
+Source host: $host
+Source user: $USER
 Backup device: $deviceLabel
 Purpose: Personal backup of the Linux home directory
 Method: rsync archive; delete destination files absent from source; exclude ISO/ directories
