@@ -38,9 +38,21 @@ if [[ -z "$deviceLabel" ]]; then
     exit 1
 fi
 
+if [[ ! -r /etc/os-release ]]; then
+    echo "ERROR: Cannot read /etc/os-release." >&2
+    exit 1
+fi
+
+source /etc/os-release
+if [[ -z "${ID:-}" ]]; then
+    echo "ERROR: The distribution ID is missing from /etc/os-release." >&2
+    exit 1
+fi
+
+distro="${ID,,}"
 host=$(hostname)
 mountPoint="/media/$USER/$deviceLabel"
-destBase="$mountPoint/backup/$host/$USER/home"
+destBase="$mountPoint/backup/$distro/home"
 stateDir="${XDG_STATE_HOME:-$HOME/.local/state}/personal-rsync-backup"
 logFile="$stateDir/backup.log"
 infoFile="$destBase/info.txt"
