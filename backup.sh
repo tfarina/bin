@@ -72,6 +72,13 @@ homeDirs=(
     ".vault"
 )
 
+excludePatterns=("ISO/") # Use excludePatterns=() for no exclusions.
+
+excludeOptions=()
+for pattern in "${excludePatterns[@]}"; do
+    excludeOptions+=(--exclude="$pattern")
+done
+
 # Helpers
 ts() { date "+%Y-%m-%d %H:%M:%S"; }
 log() { printf '[%s] %s\n' "$(ts)" "$*" | tee -a "$logFile" ; }
@@ -133,7 +140,7 @@ for dir in "${homeDirs[@]}"; do
     src="$HOME/$dir/"
     dest="$destBase/$dir/"
     log "Syncing $src -> $dest"
-    if rsync "${rsyncOptions[@]}" --exclude='ISO/' "$src" "$dest" >> "$logFile" 2>&1; then
+    if rsync "${rsyncOptions[@]}" "${excludeOptions[@]}" "$src" "$dest" >> "$logFile" 2>&1; then
         :
     else
         rsyncExitCode=$?
