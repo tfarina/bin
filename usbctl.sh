@@ -2,7 +2,6 @@
 
 ACTION="$1"
 LABEL="$2"
-MOUNT_BASE="/media/$USER"
 
 if [[ -z "$ACTION" || -z "$LABEL" ]]; then
     echo "Usage: $0 {mount|unmount|status} <LABEL>"
@@ -17,8 +16,7 @@ if [[ -z "$DEVICE" ]]; then
     exit 1
 fi
 
-
-MOUNTPOINT="$MOUNT_BASE/$LABEL"
+MOUNTPOINT="/media/$USER/$LABEL"
 
 case "$ACTION" in
     mount)
