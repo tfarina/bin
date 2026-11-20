@@ -29,9 +29,9 @@ case "$action" in
 	sudo umount "$mountPoint"
 	;;
     status)
-	mountPoint=$(lsblk -o NAME,LABEL,MOUNTPOINT --raw | grep "$label" | awk '{print $3}')
-	if [[ -n "$mountPoint" ]]; then
-	    echo "$label is mounted at $mountPoint"
+	currentMountPoint=$(findmnt --source "LABEL=$label" --noheadings --output TARGET)
+	if [[ -n "$currentMountPoint" ]]; then
+	    echo "$label is mounted at $currentMountPoint"
 	else
 	    echo "$label is not mounted"
 	fi
