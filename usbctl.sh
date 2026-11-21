@@ -18,11 +18,26 @@ fi
 
 mountPoint="/media/$USER/$label"
 
+fsType=$(lsblk -no FSTYPE "$device")
+
+case "$fsType" in
+    vfat|fat|msdos)
+        mountOptions="rw,uid=$(id -u),gid=$(id -g),fmask=0022,dmask=0022,utf8=1,shortname=mixed"
+        ;;
+    ext4)
+        mountOptions="rw"
+        ;;
+    *)
+        echo "Unsupported or unrecognized filesystem: '$fsType'"
+        exit 1
+        ;;
+esac
+
 case "$action" in
     mount)
 	echo "Mounting $device to $mountPoint..."
 	sudo mkdir -p "$mountPoint"
-	sudo mount -o rw,uid=$(id -u),gid=$(id -g),fmask=0022,dmask=0022,utf8=1,shortname=mixed "$device" "$mountPoint"
+	sudo mount -o "$mountOptions" "$device" "$mountPoint"
 	;;
     unmount|umount)
 	echo "Unmounting $device from $mountPoint..."
