@@ -9,7 +9,7 @@ if [[ -z "$action" || -z "$label" ]]; then
 fi
 
 # Find device by label
-device=$(lsblk -o NAME,LABEL --raw | grep "$label" | awk '{print "/dev/" $1}')
+device=$(lsblk -nrpo NAME,LABEL | awk -v label="$label" '$2 == label {print $1; exit}')
 
 if [[ -z "$device" ]]; then
     echo "Device with label '$label' not found."
