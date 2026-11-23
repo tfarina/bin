@@ -52,24 +52,23 @@ fi
 distro="${ID,,}"
 host=$(hostname)
 mountPoint="/media/$USER/$deviceLabel"
-destBase="$mountPoint/backup/$distro/home"
+destBase="$mountPoint/backup/$distro"
 stateDir="${XDG_STATE_HOME:-$HOME/.local/state}/personal-rsync-backup"
 logFile="$stateDir/backup.log"
 infoFile="$destBase/info.txt"
 DATE_FMT="%Y-%m-%dT%H:%M:%S%z"
 startTime="$(date "+$DATE_FMT")"
 
-# Directories inside my home to backup
-homeDirs=(
-    "Archives"
-    "Bookmarks"
-    "Documents"
-    "Library"
-    "Music"
-    "Notes"
-    "Pictures"
-    "Videos"
-    ".vault"
+backupSources=(
+    "$HOME/Archives"
+    "$HOME/Bookmarks"
+    "$HOME/Documents"
+    "$HOME/Library"
+    "$HOME/Music"
+    "$HOME/Notes"
+    "$HOME/Pictures"
+    "$HOME/Videos"
+    "$HOME/.vault"
 )
 
 excludePatterns=("ISO/") # Use excludePatterns=() for no exclusions.
@@ -101,7 +100,7 @@ else
 fi
 
 # Calculate the estimated size of the backup sources.
-if ! duOutput=$(du -sb -c -- "${homeDirs[@]/#/$HOME/}"); then
+if ! duOutput=$(du -sb -c -- "${backupSources[@]}"); then
     log "ERROR: Could not calculate the backup size; see du errors above."
     exit 1
 fi
@@ -136,9 +135,16 @@ fi
 rsyncFailed=false
 
 # Loop through each directory and rsync it
-for dir in "${homeDirs[@]}"; do
-    src="$HOME/$dir/"
-    dest="$destBase/$dir/"
+for dir in "${backupSources[@]}"; do
+    src="${dir%/}/"
+    dest="$destBase/${dir#/}/"
+    if [[ ! -d "$dest" ]]; then
+        if [[ "$isDryRun" == false ]] && ! mkdir -p -- "$dest"; then
+            log "ERROR: Could not create destination directory $dest."
+            rsyncFailed=true
+            continue
+        fi
+    fi
     log "Syncing $src -> $dest"
     if rsync "${rsyncOptions[@]}" "${excludeOptions[@]}" "$src" "$dest" >> "$logFile" 2>&1; then
         :
@@ -165,7 +171,7 @@ if [[ "$isDryRun" == false ]]; then
 Source host: $host
 Source user: $USER
 Backup device: $deviceLabel
-Purpose: Personal backup of the Linux home directory
+Purpose: Personal backup of the selected folders
 Method: rsync archive; delete destination files absent from source; exclude ISO/ directories
 Mount point: $mountPoint
 Backup path: $destBase
