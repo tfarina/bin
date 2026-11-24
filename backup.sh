@@ -99,7 +99,7 @@ else
     log "Mode: LIVE RUN - rsync changes, including deletions, will be applied"
 fi
 
-log "Preflight phase completed; starting the backup."
+log "Backup in progress, please wait..."
 
 # Make sure destination folder exist
 if [[ "$isDryRun" == false ]]; then
