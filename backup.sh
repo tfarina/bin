@@ -99,32 +99,6 @@ else
     log "Mode: LIVE RUN - rsync changes, including deletions, will be applied"
 fi
 
-# Calculate the estimated size of the backup sources.
-if ! duOutput=$(du -sb -c -- "${backupSources[@]}"); then
-    log "ERROR: Could not calculate the backup size; see du errors above."
-    exit 1
-fi
-
-backupSize=$(awk 'END { print $1 }' <<< "$duOutput")
-
-# Get total capacity and available space on the USB filesystem (in bytes).
-if ! filesystemStats=$(df --output=size,avail -B1 "$mountPoint"); then
-    log "ERROR: Could not read USB filesystem capacity and free space."
-    exit 1
-fi
-
-read -r filesystemSize filesystemFree \
-    <<< "$(tail -n 1 <<< "$filesystemStats")"
-
-log "Estimated backup size: $backupSize bytes"
-log "USB filesystem capacity: $filesystemSize bytes"
-log "Free space on USB filesystem: $filesystemFree bytes"
-
-if (( backupSize > filesystemSize )); then
-    log "ERROR: Estimated backup size exceeds the capacity of $deviceLabel."
-    exit 1
-fi
-
 log "Preflight phase completed; starting the backup."
 
 # Make sure destination folder exist
